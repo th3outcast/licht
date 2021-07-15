@@ -4,7 +4,7 @@ import (
   "crypto"
 )
 
-// JumpConsistentHash chooses a hash bucket number in the range [0, numBuckets] for the given key.
+// JumpConsistentHash chooses a hash bucket number in the range [0, numBuckets) for the given key.
 // numBuckets must >= 1.
 func JumpConsistentHash(key uint64, numbuckets int32) int32 {
   var b int64 = -1
