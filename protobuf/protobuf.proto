@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package protobuf;
+
+message ReturnValue {
+  bytes hash = 1;
+  bytes data = 2;
+}
+
+message SearchKey {
+  int32 node = 1;
+  bytes key = 2;
+}
+
+service Licht {
+  rpc ServerRequest(SearchKey) returns (ReturnVal)
+}
