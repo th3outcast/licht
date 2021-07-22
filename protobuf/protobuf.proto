@@ -13,5 +13,5 @@ message SearchKey {
 }
 
 service Licht {
-  rpc ServerRequest(SearchKey) returns (ReturnVal)
+  rpc ServerRequest(SearchKey) returns (ReturnValue);
 }

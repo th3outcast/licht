@@ -1,12 +1,16 @@
 package conn
 
 import (
+  "fmt"
   "net"
   "log"
   "math"
+  "time"
+
+  "google.golang.org/grpc"
+  "google.golang.org/grpc/keepalive"
 
   "github.com/th3outcast/licht/protobuf"
-  "google.golang.org/grpc"
 )
 
 type GRPCServer struct {
@@ -23,7 +27,7 @@ func NewGRPCServer(port string) (*GRPCServer, error) {
       keepalive.ServerParameters {
         Time: 5 * time.Second,
         Timeout: 5 * time.Second,
-      }
+      },
     ),
   }
 
@@ -31,11 +35,12 @@ func NewGRPCServer(port string) (*GRPCServer, error) {
     opts...,
   )
 
+  s := protobuf.Server{}
   protobuf.RegisterLichtServer(server, &s)
 
   listener, err := net.Listen("tcp", port)
   if err != nil {
-    log.Fatalf("failed to create listener over port: %s", port)
+    log.Fatalf("failed to create listener over port %s", port)
   }
 
   return &GRPCServer{
@@ -56,7 +61,7 @@ func (s *GRPCServer) Start() error {
   go func() {
     _ = s.server.Serve(s.listener)
   }()
-  fmt.Printf("gRPC server started over port: %s", s.port)
+  fmt.Printf("gRPC server started over port: %s\n", s.port)
   return nil
 }
 

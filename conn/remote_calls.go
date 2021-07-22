@@ -3,6 +3,7 @@ package conn
 import (
   "fmt"
   "net/http"
+  "io"
   "io/ioutil"
   "errors"
 )
