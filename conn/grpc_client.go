@@ -1,17 +1,18 @@
 package conn
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"math"
-	"net"
-	"time"
+  "context"
+  // "fmt"
+  "log"
+  "math"
+  // "net"
+  "time"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/keepalive"
+  "google.golang.org/grpc"
+  "google.golang.org/grpc/keepalive"
+  "google.golang.org/grpc/credentials"
 
-	"github.com/th3outcast/licht/protobuf"
+  "github.com/th3outcast/licht/protobuf"
 )
 
 type GRPCClient struct {
@@ -24,24 +25,24 @@ type GRPCClient struct {
     nodeNum   int
 }
 
-func NewGRPCClient(grpc_addr string) (*GRPCClient, error) {
-	return NewGRPCClientWithContext(grpc_addr, context.Background())
+func NewGRPCClient(grpc_addr string, nodeNum int) (*GRPCClient, error) {
+	return NewGRPCClientWithContext(grpc_addr, context.Background(), nodeNum)
 }
 
-func NewGRPCClientWithContext(grpc_addr string, baseCtx context.Context) (*GRPCClient, error) {
-	return NewGRPCClientWithContextTLS(grpc_addr, baseCtx, "", "")
+func NewGRPCClientWithContext(grpc_addr string, baseCtx context.Context, nodeNum int) (*GRPCClient, error) {
+	return NewGRPCClientWithContextTLS(grpc_addr, baseCtx, "", "", nodeNum)
 }
 
 func NewGRPCClientWithContextTLS(grpc_addr string, baseCtx context.Context, certificateFile string, commonName string, nodeNum int) (*GRPCClient, error) {
 	dialOpts := []grpc.DialOption{
-		grpc.WithDefaultOptions(
+		grpc.WithDefaultCallOptions(
 			grpc.MaxCallSendMsgSize(math.MaxInt64),
 			grpc.MaxCallRecvMsgSize(math.MaxInt64),
 		),
 		grpc.WithKeepaliveParams(
 			keepalive.ClientParameters{
 				Time:                1 * time.Second,
-				TImeout:             5 * time.Second,
+				Timeout:             5 * time.Second,
 				PermitWithoutStream: true,
 			},
 		),
@@ -75,10 +76,11 @@ func NewGRPCClientWithContextTLS(grpc_addr string, baseCtx context.Context, cert
 	}, nil
 }
 
-func (c *GRPCClient) Get(req *protobuf.SearchKey, opts ...grpc.CallOption) (*protobuf.ReturnValue, error) {
-  if req.Node != c.nodeNum {
-    return nil, nil
-  }
+func (c *GRPCClient) ServerRequest(req *protobuf.SearchKey, opts ...grpc.CallOption) (*protobuf.ReturnValue, error) {
+  
+  if req.Node != int32(c.nodeNum) {
+    return &protobuf.ReturnValue{}, nil
+  }/*
   if resp, err := c.client.ServerRequest(c.ctx, req, opts...); err != nil {
     stat, _ := status.FromError(err)
     switch stat.Code() {
@@ -86,8 +88,20 @@ func (c *GRPCClient) Get(req *protobuf.SearchKey, opts ...grpc.CallOption) (*pro
         return nil, errors.ErrNotFound
       default:
         return nil, err
-    } else {
-      return resp, nil
     }
+  } else {
+      return resp, nil
   }
+  */
+
+  resp, err := c.client.ServerRequest(c.ctx, req, opts...)
+  if err != nil {
+    log.Fatalf("Error when calling ServerRequest: %s\n", err)
+  }
+  log.Printf("Response from server: %s, %s\n", string(resp.Hash), string(resp.Data))
+  return &protobuf.ReturnValue{
+    Hash: []byte("client"),
+    Data: []byte("side"),
+  }, nil
 }
+

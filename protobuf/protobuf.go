@@ -8,5 +8,9 @@ import (
 type Server struct{}
 
 func (s *Server) ServerRequest(ctx context.Context, sk *SearchKey) (*ReturnValue, error) {
-  return &ReturnValue{}, nil
+  rv := &ReturnValue{
+    Hash: []byte("test"),
+    Data: []byte("run"),
+  }
+  return rv, nil
 }

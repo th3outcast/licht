@@ -6,6 +6,7 @@ import (
   "log"
   "math"
   "time"
+  //"context"
 
   "google.golang.org/grpc"
   "google.golang.org/grpc/keepalive"
@@ -71,3 +72,13 @@ func (s *GRPCServer) Stop() error {
   fmt.Printf("gRPC server stopped.")
   return nil
 }
+
+/*
+func (s *GRPCServer) ServerRequest(ctx context.Context, req *protobuf.SearchKey) (*protobuf.ReturnValue, error) {
+  rv := &protobuf.ReturnValue{
+    Hash: []byte("test"),
+    Data: []byte("run"),
+  }
+  return rv, nil
+}
+*/
