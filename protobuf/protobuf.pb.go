@@ -124,18 +124,17 @@ func init() {
 func init() { proto.RegisterFile("protobuf.proto", fileDescriptor_c77a803fcbc0c059) }
 
 var fileDescriptor_c77a803fcbc0c059 = []byte{
-	// 164 bytes of a gzipped FileDescriptorProto
+	// 159 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x28, 0xca, 0x2f,
 	0xc9, 0x4f, 0x2a, 0x4d, 0xd3, 0x03, 0x33, 0x84, 0x38, 0x60, 0x7c, 0x25, 0x53, 0x2e, 0xee, 0xa0,
 	0xd4, 0x92, 0xd2, 0xa2, 0xbc, 0xb0, 0xc4, 0x9c, 0xd2, 0x54, 0x21, 0x21, 0x2e, 0x96, 0x8c, 0xc4,
 	0xe2, 0x0c, 0x09, 0x46, 0x05, 0x46, 0x0d, 0x9e, 0x20, 0x30, 0x1b, 0x24, 0x96, 0x92, 0x58, 0x92,
 	0x28, 0xc1, 0x04, 0x11, 0x03, 0xb1, 0x95, 0x0c, 0xb9, 0x38, 0x83, 0x53, 0x13, 0x8b, 0x92, 0x33,
 	0xbc, 0x53, 0x2b, 0x41, 0x0a, 0xf2, 0xf2, 0x53, 0x52, 0xc1, 0x9a, 0x58, 0x83, 0xc0, 0x6c, 0x21,
-	0x01, 0x2e, 0xe6, 0xec, 0xd4, 0x4a, 0xa8, 0x1e, 0x10, 0xd3, 0xc8, 0x85, 0x8b, 0xd5, 0x27, 0x33,
-	0x39, 0xa3, 0x44, 0xc8, 0x9a, 0x8b, 0x37, 0x38, 0xb5, 0xa8, 0x2c, 0xb5, 0x28, 0x28, 0xb5, 0xb0,
-	0x34, 0xb5, 0xb8, 0x44, 0x48, 0x58, 0x0f, 0xee, 0x3c, 0xb8, 0xa1, 0x52, 0xa2, 0x08, 0x41, 0x24,
-	0x07, 0x26, 0xb1, 0x81, 0x45, 0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x36, 0x39, 0xab, 0x01,
-	0xd2, 0x00, 0x00, 0x00,
+	0x01, 0x2e, 0xe6, 0xec, 0xd4, 0x4a, 0xa8, 0x1e, 0x10, 0xd3, 0xc8, 0x91, 0x8b, 0xd5, 0x27, 0x33,
+	0x39, 0xa3, 0x44, 0xc8, 0x82, 0x8b, 0x2b, 0x28, 0xb5, 0xb0, 0x34, 0xb5, 0xb8, 0x04, 0xa4, 0x59,
+	0x58, 0x0f, 0xee, 0x36, 0xb8, 0x89, 0x52, 0xa2, 0x08, 0x41, 0x24, 0xd7, 0x25, 0xb1, 0x81, 0x45,
+	0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0xef, 0xa8, 0x9c, 0x11, 0xcf, 0x00, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -150,7 +149,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LichtClient interface {
-	ServerRequest(ctx context.Context, in *SearchKey, opts ...grpc.CallOption) (*ReturnValue, error)
+	RequestKey(ctx context.Context, in *SearchKey, opts ...grpc.CallOption) (*ReturnValue, error)
 }
 
 type lichtClient struct {
@@ -161,9 +160,9 @@ func NewLichtClient(cc *grpc.ClientConn) LichtClient {
 	return &lichtClient{cc}
 }
 
-func (c *lichtClient) ServerRequest(ctx context.Context, in *SearchKey, opts ...grpc.CallOption) (*ReturnValue, error) {
+func (c *lichtClient) RequestKey(ctx context.Context, in *SearchKey, opts ...grpc.CallOption) (*ReturnValue, error) {
 	out := new(ReturnValue)
-	err := c.cc.Invoke(ctx, "/protobuf.Licht/ServerRequest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protobuf.Licht/RequestKey", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -172,35 +171,35 @@ func (c *lichtClient) ServerRequest(ctx context.Context, in *SearchKey, opts ...
 
 // LichtServer is the server API for Licht service.
 type LichtServer interface {
-	ServerRequest(context.Context, *SearchKey) (*ReturnValue, error)
+	RequestKey(context.Context, *SearchKey) (*ReturnValue, error)
 }
 
 // UnimplementedLichtServer can be embedded to have forward compatible implementations.
 type UnimplementedLichtServer struct {
 }
 
-func (*UnimplementedLichtServer) ServerRequest(ctx context.Context, req *SearchKey) (*ReturnValue, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ServerRequest not implemented")
+func (*UnimplementedLichtServer) RequestKey(ctx context.Context, req *SearchKey) (*ReturnValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequestKey not implemented")
 }
 
 func RegisterLichtServer(s *grpc.Server, srv LichtServer) {
 	s.RegisterService(&_Licht_serviceDesc, srv)
 }
 
-func _Licht_ServerRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Licht_RequestKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchKey)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LichtServer).ServerRequest(ctx, in)
+		return srv.(LichtServer).RequestKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protobuf.Licht/ServerRequest",
+		FullMethod: "/protobuf.Licht/RequestKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LichtServer).ServerRequest(ctx, req.(*SearchKey))
+		return srv.(LichtServer).RequestKey(ctx, req.(*SearchKey))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -210,8 +209,8 @@ var _Licht_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*LichtServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ServerRequest",
-			Handler:    _Licht_ServerRequest_Handler,
+			MethodName: "RequestKey",
+			Handler:    _Licht_RequestKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,2 +1,3 @@
 test.go
 test_client.go
+test_client_dup.go
