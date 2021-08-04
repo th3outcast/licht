@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto"
+
 package protobuf;
 
 message ReturnValue {
@@ -12,6 +14,14 @@ message SearchKey {
   bytes key = 2;
 }
 
+message SetKey {
+  bytes key = 1;
+  bytes hash = 2;
+  bytes data = 3;
+}
+
 service Licht {
   rpc RequestKey(SearchKey) returns (ReturnValue);
+
+  rpc SetKV(SetKey) returns (google.protobuf.Empty);
 }

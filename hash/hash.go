@@ -1,7 +1,7 @@
 package hash
 
 import (
-  "crypto"
+  //"crypto"
 )
 
 // JumpConsistentHash chooses a hash bucket number in the range [0, numBuckets) for the given key.

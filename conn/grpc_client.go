@@ -15,6 +15,7 @@ import (
 
 	"github.com/th3outcast/licht/errors"
 	"github.com/th3outcast/licht/protobuf"
+	"github.com/th3outcast/licht/hash"
 )
 
 type GRPCClient struct {
@@ -95,4 +96,19 @@ func (c *GRPCClient) RequestKey(req *protobuf.SearchKey, opts ...grpc.CallOption
 	} else {
 		return resp, nil
 	}
+}
+
+func (c *GRPCClient) SetKV(req *protobuf.SetKey, numBuckets int32, opts ..grpc.CallOption) error {
+  key := req.GetKey()
+  // Calculate destination node
+  node := hash.JumpConsistentHash(key, numBuckets)
+  if c.nodeNum != node {
+    return
+  }
+  _, err := c.client.SetKV(c.ctx, req, opts...)
+  if err != nil {
+    return err
+  }
+
+  return err
 }
