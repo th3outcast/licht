@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang/protobuf/ptypes/empty"
 
-	"github.com/th3outcast/licht/lib"
 	"github.com/th3outcast/licht/errors"
+	"github.com/th3outcast/licht/lib"
 )
 
 type Server struct {
@@ -32,22 +32,22 @@ func (s *Server) RequestKey(ctx context.Context, sk *SearchKey) (*ReturnValue, e
 }
 
 func (s *Server) SetKV(ctx context.Context, sk *SetKey) (*empty.Empty, error) {
-  resp := &empty.Empty{}
+	resp := &empty.Empty{}
 
-  var data []byte
-  hash := sk.GetHash()
-  data = sk.GetData()
+	var data []byte
+	hash := sk.GetHash()
+	data = sk.GetData()
 
-  rec := lib.Record{
-    Hash: string(hash),
-    Data: data,
-  }
+	rec := lib.Record{
+		Hash: string(hash),
+		Data: data,
+	}
 
-  data = lib.FromRecord(rec)
-  var success bool
-  success = s.SetValue(key, data)
-  if success != true {
-    return resp, errors.ErrSetKV
-  }
-  return resp, nil
+	data = lib.FromRecord(rec)
+	var success bool
+	success = s.SetValue(key, data)
+	if success != true {
+		return resp, errors.ErrSetKV
+	}
+	return resp, nil
 }

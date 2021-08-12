@@ -4,5 +4,5 @@ import "errors"
 
 var (
 	ErrNotFound = errors.New("Not found")
-	ErrSetKV = errors.New("Error setting key-value")
+	ErrSetKV    = errors.New("Error setting key-value")
 )
