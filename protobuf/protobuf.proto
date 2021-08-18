@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto"
+import "google/api/annotations.proto"
 
 package protobuf;
 
@@ -21,7 +22,16 @@ message SetKey {
 }
 
 service Licht {
-  rpc RequestKey(SearchKey) returns (ReturnValue);
+  rpc RequestKey(SearchKey) returns (ReturnValue) {
+    option (google.api.http) = {
+      get: "/v1/data/{node}/key/{key}"
+    };
+  }
 
-  rpc SetKV(SetKey) returns (google.protobuf.Empty);
+  rpc SetKV(SetKey) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/data/{key}/{hash}/{data}"
+      body: "*"
+    }
+  }
 }
